@@ -6,7 +6,7 @@ RSpec.describe Enigma do
     @enigma = Enigma.new
   end
 
-  context "initialize" do
+  context "Initialize" do
     it 'exists' do
       expect(@enigma).to be_a(Enigma)
       expect(@enigma.char_set.size).to eq(27)
@@ -37,14 +37,24 @@ RSpec.describe Enigma do
       expect(@enigma.shift_char('l', 73)).to eq('d')
       expect(@enigma.shift_char('l', 20)).to eq('e')
     end
+
+    it '#result_hash' do
+      expected = {encryption: "hello world!", key: "02715", date: "040895"}
+      expect(@enigma.result_hash(:encryption, "hello world!", "02715", "040895" )).to eq(expected)
+    end
   end
 
-  context "Encrypt" do
+  context "Main methods" do
     it "#encrypt" do
       code = @enigma.encrypt("hello world", "02715", "040895")
-      expect(code).to eq("keder ohulw")
-      code2 = @enigma.encrypt("hello world!", "02715", "040895")
-      expect(code2).to eq("keder ohulw!")
+      expected = {encryption: "keder ohulw", key: "02715", date: "040895"}
+      expect(code).to eq(expected)
+    end
+
+    it '#encrypt leaves other characters as they are' do
+      code = @enigma.encrypt("hello world!", "02715", "040895")
+      expected = {encryption: "keder ohulw!", key: "02715", date: "040895"}
+      expect(code).to eq(expected)
     end
   end
 end

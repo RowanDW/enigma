@@ -16,9 +16,8 @@ class Enigma
         output += shift_char(char, shifts[output.length % 4])
       end
     end
-    output
+    result_hash(:encryption, output, key, date)
   end
-
 
   def generate_key
     range = ('00000'..'99999').to_a
@@ -46,5 +45,11 @@ class Enigma
     index = @char_set.index(char)
     new_index = (index + shift) % 27
     @char_set[new_index]
+  end
+
+  def result_hash(encr_or_decr, result, key, date)
+    {encr_or_decr => result,
+    :key => key,
+    :date => date}
   end
 end
