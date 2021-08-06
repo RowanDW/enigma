@@ -19,6 +19,20 @@ class Enigma
     result_hash(:encryption, output, key, date)
   end
 
+  def decrypt(message, key = generate_key, date)
+    split_message = message.downcase.split('')
+    shifts = create_shifts(key, date)
+    output = ''
+    split_message.each do |char|
+      if !@char_set.include?(char)
+        output += char
+      else
+        output += shift_char(char, -(shifts[output.length % 4]))
+      end
+    end
+    result_hash(:decryption, output, key, date)
+  end
+
   def generate_key
     range = ('00000'..'99999').to_a
     range.sample
