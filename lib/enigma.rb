@@ -5,37 +5,39 @@ class Enigma
     @char_set = ("a".."z").to_a << " "
   end
 
-  def encrypt(message, key = generate_key, date)
+  def encrypt(message, key = generate_key, date = generate_date)
     split_message = message.downcase.split('')
     shifts = create_shifts(key, date)
-    output = ''
-    split_message.each do |char|
-      if !@char_set.include?(char)
-        output += char
-      else
-        output += shift_char(char, shifts[output.length % 4])
-      end
-    end
-    result_hash(:encryption, output, key, date)
+    result = shift_message(split_message, shifts, 1)
+    result_hash(:encryption, result, key, date)
   end
 
-  def decrypt(message, key = generate_key, date)
+  def decrypt(message, key, date = generate_date)
     split_message = message.downcase.split('')
     shifts = create_shifts(key, date)
+    result = shift_message(split_message, shifts, -1)
+    result_hash(:decryption, result, key, date)
+  end
+
+  def shift_message(message_arr, shifts, plus_or_minus)
     output = ''
-    split_message.each do |char|
+    message_arr.each do |char|
       if !@char_set.include?(char)
         output += char
       else
-        output += shift_char(char, -(shifts[output.length % 4]))
+        output += shift_char(char, plus_or_minus * (shifts[output.length % 4]))
       end
     end
-    result_hash(:decryption, output, key, date)
+    output
   end
 
   def generate_key
     range = ('00000'..'99999').to_a
     range.sample
+  end
+
+  def generate_date
+    Time.now.strftime("%m%d%y")
   end
 
   def create_shifts(key, date)
