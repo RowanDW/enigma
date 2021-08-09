@@ -5,7 +5,7 @@ class Enigma
     @char_set = ("a".."z").to_a << " "
   end
 
-  def encrypt(message, key = generate_key, date)
+  def encrypt(message, key = generate_key, date = Time.now.strftime("%m%d%y"))
     split_message = message.downcase.split('')
     shifts = create_shifts(key, date)
     output = ''
@@ -19,7 +19,7 @@ class Enigma
     result_hash(:encryption, output, key, date)
   end
 
-  def decrypt(message, key = generate_key, date)
+  def decrypt(message, key, date = Time.now.strftime("%m%d%y"))
     split_message = message.downcase.split('')
     shifts = create_shifts(key, date)
     output = ''

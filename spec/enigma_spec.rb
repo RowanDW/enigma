@@ -57,10 +57,35 @@ RSpec.describe Enigma do
       expect(code).to eq(expected)
     end
 
+    it '#encrypt uses todays date if none is given' do
+      code = @enigma.encrypt("hello world!","02715")
+      expected = {encryption: "okfavfqdyry!", key: "02715", date: "080621"}
+      expect(code).to eq(expected)
+    end
+
+    it '#encrypt uses a random key and todays date if none are given' do
+      allow(@enigma).to receive(:generate_key).and_return("12345")
+      code = @enigma.encrypt("hello world!")
+      expected = {encryption: "ygwdebgghno!", key: "12345", date: "080621"}
+      expect(code).to eq(expected)
+    end
+
     it '#decrypt' do
       message = @enigma.decrypt("keder ohulw", "02715", "040895")
       expected = {decryption: "hello world", key: "02715", date: "040895"}
       expect(message).to eq(expected)
+    end
+
+    it '#decrypt leaves other characters as they are' do
+      message = @enigma.decrypt("keder ohulw!", "02715", "040895")
+      expected = {decryption: "hello world!", key: "02715", date: "040895"}
+      expect(message).to eq(expected)
+    end
+
+    it '#decrypt uses todays date if none is given' do
+      code = @enigma.decrypt("okfavfqdyry!","02715")
+      expected = {decryption: "hello world!", key: "02715", date: "080621"}
+      expect(code).to eq(expected)
     end
   end
 end
