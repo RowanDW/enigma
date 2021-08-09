@@ -20,6 +20,13 @@ RSpec.describe Enigma do
       expect(key.length).to eq(5)
     end
 
+    it "#generate_date" do
+      date = @enigma.generate_date
+      expect(date).to be_a(String)
+      expect(date.length).to eq(6)
+      expect(date).to eq(Time.now.strftime("%m%d%y"))
+    end
+
     it "#offset" do
       offset = @enigma.offset("040895")
       expect(offset).to eq("1025")
@@ -58,6 +65,7 @@ RSpec.describe Enigma do
     end
 
     it '#encrypt uses todays date if none is given' do
+      allow(@enigma).to receive(:generate_date).and_return("080621")
       code = @enigma.encrypt("hello world!","02715")
       expected = {encryption: "okfavfqdyry!", key: "02715", date: "080621"}
       expect(code).to eq(expected)
@@ -65,6 +73,7 @@ RSpec.describe Enigma do
 
     it '#encrypt uses a random key and todays date if none are given' do
       allow(@enigma).to receive(:generate_key).and_return("12345")
+      allow(@enigma).to receive(:generate_date).and_return("080621")
       code = @enigma.encrypt("hello world!")
       expected = {encryption: "ygwdebgghno!", key: "12345", date: "080621"}
       expect(code).to eq(expected)
@@ -83,6 +92,7 @@ RSpec.describe Enigma do
     end
 
     it '#decrypt uses todays date if none is given' do
+      allow(@enigma).to receive(:generate_date).and_return("080621")
       code = @enigma.decrypt("okfavfqdyry!","02715")
       expected = {decryption: "hello world!", key: "02715", date: "080621"}
       expect(code).to eq(expected)
